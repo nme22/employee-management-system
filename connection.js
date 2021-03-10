@@ -25,10 +25,10 @@ function runSearch() {
             case "Department":
                 queryAdd();
                 break;
-            case "Role":
+            case "role":
                 queryView();
                 break;
-            case "Employee":
+            case "employee":
                 queryUpdate();
                 break;
         }
@@ -58,10 +58,10 @@ function queryAdd() {
                         runSearch();
                     });
                     break;
-                case "Role":
+                case "role":
                     queryAddRole();
                     break;
-                case "Employee":
+                case "employee":
                     queryAddEmployee();
                     break;
             }
@@ -100,7 +100,7 @@ function queryView() {
                     });
 
                     break;
-                case "Employee":
+                case "View a employee":
                     queryAddEmployee();
                     break;
             }
