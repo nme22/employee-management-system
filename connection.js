@@ -1,6 +1,4 @@
 const mysql = require('mysql');
-const util = require('util');
-const inquirer = require('inquirer');
 
 const connection = mysql.createConnection({
     host: 'localhost',
@@ -13,10 +11,6 @@ const connection = mysql.createConnection({
 connection.connect((err) => {
     if (err) throw err;
     console.log(`connected as id ${connection.threadId}`);
-    runSearch();
 })
-connection.connect();
-connection.query = util.promisify(connection.query);
-
 
 module.exports = connection;
