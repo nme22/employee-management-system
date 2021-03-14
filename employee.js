@@ -1,24 +1,51 @@
+const inquirer = require('inquirer');
+const connection = require('./connection');
+
 function runSearch() {
     inquirer.prompt([{
         type: 'list',
         name: 'userChoice',
         message: 'What would you like to search?',
         choices: [
-            "Add a department, role, or employee",
-            "View a department, role, or employee",
-            "Update a department, role, or employee",
+            "Add a department",
+            "Add a role",
+            "Add a employee",
+            "View a department",
+            "View a role",
+            "View an employee",
+            "Update a department",
+            "Update a role",
+            "Update an employee"
         ]
     }]).then((answer) => {
         // Create a switch case for what the user wants to do with the database
         switch (answer.userChoice) {
-            case "Department":
-                queryAdd();
+            case "Add a department":
+                addDepartment();
                 break;
-            case "role":
-                queryView();
+            case "Add a role":
+                addRole();
                 break;
-            case "employee":
-                queryUpdate();
+            case "Add an employee":
+                addEmployee();
+                break;
+            case "View a department":
+                viewDepartment();
+                break;
+            case "View a role":
+                viewRole();
+                break;
+            case "View an employee":
+                viewEmployee();
+                break;
+            case "Update a department":
+                updateDepartment();
+                break;
+            case "Update a role":
+                updateRole();
+                break;
+            case "Update an employee":
+                updateEmployee();
                 break;
         }
     });
