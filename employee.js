@@ -123,13 +123,4 @@ function queryView() {
 
 
         });
-
-    // connection.query(query, (err, results) => {
-    //     if (err) throw err;
-    //     console.log(results);
-    //     runSearch();
-
-
-
-
 }​
