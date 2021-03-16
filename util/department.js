@@ -1,0 +1,7 @@
+class Department {
+    constructor(id, department_name) {
+        this.id = id
+        this.department_name
+    }
+}
+module.exports = Department

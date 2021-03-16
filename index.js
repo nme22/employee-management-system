@@ -1,6 +1,9 @@
 const mysql = require('mysql');
 const inquirer = require('inquirer');
 const connection = require('./connection');
+const Employee = require('./util/employee');
+const Roles = require('./util/roles');
+const Department = require('./util/department');
 
 function runSearch() {
     inquirer.prompt([{
@@ -43,23 +46,23 @@ function runSearch() {
 }​
 
 function addEmployee() {
-    console.log('they selected to add employee')
+    console.log('Selected: add employee')
     // ask for employee info 
     inquirer.prompt(
         [{
                 type: 'input',
                 name: 'first_name',
-                message: 'What is the Employees first name?'
+                message: 'What is first name of the Employee?'
             },
             {
                 type: 'input',
                 name: 'last_name',
-                message: 'What is the Employees last name?'
+                message: 'What is the last name of the Employee?'
             },
             {
                 type: 'list',
                 name: 'role',
-                message: 'What is the Employees role?',
+                message: 'What is the role of the Employee?',
                 choices: [
                     'Accountant',
                     'Developer',
@@ -70,7 +73,7 @@ function addEmployee() {
             {
                 type: 'list',
                 name: 'manager',
-                message: 'Who is the Employees manager?',
+                message: 'Who is the Employees direct manager?',
                 choices: [
                     'Joe Han',
                     'Baba Bazorg',
@@ -122,6 +125,44 @@ function addEmployee() {
         console.log('DONE--->')
     })
 }
+
+function addRole() {
+    console.log('Selected: add a role')
+    inquirer.prompt([{
+            type: 'input',
+            name: 'id',
+            message: 'What is the id for this role?'
+        },
+        {
+            type: 'input',
+            name: 'title',
+            message: 'What is this roles title?'
+        },
+        {
+            type: 'input',
+            name: 'salary',
+            message: 'What is the Salary for this role?'
+        },
+        {
+            type: 'input',
+            name: 'department_id',
+            message: 'What is the department id?'
+        }
+    ]).then(answers => {
+        answers.id = parseInt(answers.id)
+        answers.department_id = parseInt(answers.department_id)
+
+        let newRole = new Roles(answers.id, answers.title, answers.salary, answers.department_id)
+        connection.query("INSERT INTO roles SET ?", newRole, function (err, res) {
+            if (err) throw err
+        })
+    })
+}
+
+
+
+
+
 
 
 // function queryAdd() {
