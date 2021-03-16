@@ -1,3 +1,4 @@
+const mysql = require('mysql');
 const inquirer = require('inquirer');
 const connection = require('./connection');
 
@@ -13,9 +14,7 @@ function runSearch() {
             "View a department",
             "View a role",
             "View an employee",
-            "Update a department",
-            "Update a role",
-            "Update an employee"
+            "Update an employee role"
         ]
     }]).then((answer) => {
         // Create a switch case for what the user wants to do with the database
@@ -32,21 +31,16 @@ function runSearch() {
             case "View a department":
                 viewDepartment();
                 break;
-            case "View a role":
-                viewRole();
+            case "View roles":
+                viewRoles();
                 break;
-            case "View an employee":
+            case "View employees":
                 viewEmployee();
                 break;
-            case "Update a department":
-                updateDepartment();
+            case "Update an employee role":
+                updateEmployeeRole();
                 break;
-            case "Update a role":
-                updateRole();
-                break;
-            case "Update an employee":
-                updateEmployee();
-                break;
+
         }
     });
 }​
