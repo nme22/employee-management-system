@@ -22,6 +22,9 @@ function runSearch() {
     }]).then((answer) => {
         // Create a switch case for what the user wants to do with the database
         switch (answer.userChoice) {
+            case "Add a Department":
+                addDepartment();
+                break;
             case "Add an employee":
                 addEmployee();
                 break;
