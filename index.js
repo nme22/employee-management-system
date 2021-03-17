@@ -162,6 +162,27 @@ function addRole() {
     })
 }
 
+function addDepartment() {
+    console.log('Selected: Add a Department')
+    inquirer.prompt([{
+            type: 'input',
+            name: 'id',
+            message: 'What is the id for this department?'
+        },
+        {
+            type: 'input',
+            name: 'name',
+            message: 'What would you like to name this department?'
+        }
+    ]).then(answers => {
+        answers.id = parseInt(answers.id)
+        let newDepartment = new Department(answers.id, answers.name)
+        connection.query("INSERT INTO department Set ?", newDepartment, function (err, res) {
+            if (err) throw err
+        })
+        console.table(answers)
+    })
+}
 
 
 
