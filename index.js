@@ -216,28 +216,25 @@ function addDepartment() {
 
 function queryEmployees() {
     return new Promise(resolve => {
-        let data = connection.query("SELECT first_name, last_name, role_id, manager_id, title, salary, department_id FROM employeeDB.employee AS E JOIN roles AS R ON E.role_id = R.id;", function (err, res) {
+        connection.query("SELECT * FROM employeeDB.employee", function (err, res) {
             if (err) throw err
-            console.table(res)
-            resolve('resolved')
-            // return data
+
+            resolve(res)
         })
     })
 }
 
 async function viewEmployees() {
     const result = await queryEmployees()
-    console.log(result)
+    console.log(result);
     // JSON.parse(query)
 }
 
 function queryDepartments() {
     return new Promise(resolve => {
-        let data = connection.query("SELECT department_name, department_id FROM employeeDB.department AS D JOIN employeeDB.roles AS R ON D.id = R.id", function (err, res) {
+        connection.query("SELECT * FROM employeeDB.department", function (err, res) {
             if (err) throw err
-            console.table(res)
-            resolve('resolved')
-            // return data
+            resolve(res)
         })
     })
 }
@@ -250,11 +247,9 @@ async function viewDepartment() {
 
 function queryRoles() {
     return new Promise(resolve => {
-        let data = connection.query("SELECT title, salary, department_id, department_name FROM employeeDB.roles AS R JOIN employeeDB.department AS D ON R.id = D.id;", function (err, res) {
+        let data = connection.query("SELECT * FROM employeeDB.roles", function (err, res) {
             if (err) throw err
-            console.table(res)
-            resolve('resolved')
-            // return data
+            resolve(res)
         })
     })
 }

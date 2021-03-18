@@ -1,7 +1,7 @@
 class Department {
-    constructor(id, department_name) {
+    constructor(id, name) {
         this.id = id
-        this.department_name = department_name
+        this.name = name
     }
 }
 module.exports = Department
