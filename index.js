@@ -1,71 +1,91 @@
-const mysql = require('mysql');
-const inquirer = require('inquirer');
-const connection = require('./connection');
+const mysql = require("mysql");
+const inquirer = require("inquirer");
 const Employee = require('./util/employee');
-const Roles = require('./util/roles');
-const Department = require('./util/department');
+const addNewRole = require('./util/roles')
+const Department = require('./util/department')
+
+const connection = mysql.createConnection({
+    host: "localhost",
+    port: 3306,
+    user: "root",
+    password: "password",
+    database: "employeeDB"
+});
+
+connection.connect(function (err) {
+    if (err) throw err;
+    console.log('connected as id ' + connection.threadId);
+    runSearch()
+});
 
 function runSearch() {
-    inquirer.prompt([{
-        type: 'list',
-        name: 'userChoice',
-        message: 'What would you like to search?',
-        choices: [
-            "Add a department",
-            "Add a role",
-            "Add a employee",
-            "View a department",
-            "View a role",
-            "View an employee",
-            "Update an employee role"
-        ]
-    }]).then((answer) => {
-        // Create a switch case for what the user wants to do with the database
-        switch (answer.userChoice) {
-            case "Add a Department":
-                addDepartment();
-                break;
-            case "Add an employee":
-                addEmployee();
-                break;
-            case "Add a role":
-                addRole();
-                break;
-            case "View a department":
-                viewDepartment();
-                break;
-            case "View role":
-                viewRoles();
-                break;
-            case "View employees":
-                viewEmployee();
-                break;
-            case "Update an employee role":
-                updateEmployeeRole();
-                break;
+    inquirer
+        .prompt({
+            name: "action",
+            type: "list",
+            message: "What would you like to do?",
+            choices: [
+                'Add An Employee',
+                'Add a role',
+                'Add a Department',
+                'View department',
+                'View roles',
+                'View employees',
+                'Update employee roles'
+            ]
+        })
+        .then(function (answer) {
+            switch (answer.action) {
+                case "Add An Employee":
+                    addEmployee();
+                    break;
 
-        }
-    });
-}​
+                case "Add a role":
+                    addRole();
+                    break;
 
+                case "Add a Department":
+                    addDepartment();
+                    break;
+
+                case "View department":
+                    viewDepartment();
+                    break;
+
+                case "View roles":
+                    viewRoles();
+                    break;
+
+                case "View employees":
+                    viewEmployees();
+                    break;
+
+                case "Update employee roles":
+                    updateEmployeeRole();
+                    break;
+            }
+        });
+}
+
+// addEmployee function
 function addEmployee() {
-    console.log('Selected: add employee')
+    console.log('they selected to add employee')
     // ask for employee info 
     inquirer.prompt(
         [{
                 type: 'input',
                 name: 'first_name',
-                message: 'What is first name of the Employee?'
+                message: 'What is the Employees first name?'
             },
             {
                 type: 'input',
                 name: 'last_name',
-                message: 'What is the last name of the Employee?'
+                message: 'What is the Employees last name?'
             },
             {
                 type: 'list',
                 name: 'role',
-                message: 'What is the role of the Employee?',
+                message: 'What is the Employees role?',
                 choices: [
                     'Accountant',
                     'Developer',
@@ -76,7 +96,7 @@ function addEmployee() {
             {
                 type: 'list',
                 name: 'manager',
-                message: 'Who is the Employees direct manager?',
+                message: 'Who is the Employees manager?',
                 choices: [
                     'Joe Han',
                     'Baba Bazorg',
@@ -127,10 +147,13 @@ function addEmployee() {
         console.log(answers)
         console.log('DONE--->')
     })
+    // create a new instance of employee
+
 }
 
 function addRole() {
-    console.log('Selected: add a role')
+    console.log('They selected to add a role')
+    // find out which role they want to add
     inquirer.prompt([{
             type: 'input',
             name: 'id',
@@ -139,7 +162,7 @@ function addRole() {
         {
             type: 'input',
             name: 'title',
-            message: 'What is this roles title?'
+            message: 'What is the name of this role?'
         },
         {
             type: 'input',
@@ -150,20 +173,27 @@ function addRole() {
             type: 'input',
             name: 'department_id',
             message: 'What is the department id?'
-        }
+        },
     ]).then(answers => {
+        // use constructor function to create a new role 
+        // convert id and department_id to integers
         answers.id = parseInt(answers.id)
         answers.department_id = parseInt(answers.department_id)
 
-        let newRole = new Roles(answers.id, answers.title, answers.salary, answers.department_id)
-        connection.query("INSERT INTO roles SET ?", newRole, function (err, res) {
+        let newRole = new addNewRole(answers.id, answers.title, answers.salary, answers.department_id)
+        connection.query("INSERT INTO roles Set ?", newRole, function (err, res) {
             if (err) throw err
         })
+        console.table(newRole)
+        console.log('This New Role has been sent for review!')
+        // add new role to role table
     })
+    // find role in data and update it
+
 }
 
 function addDepartment() {
-    console.log('Selected: Add a Department')
+    console.log('They selected to add a Department')
     inquirer.prompt([{
             type: 'input',
             name: 'id',
@@ -172,8 +202,8 @@ function addDepartment() {
         {
             type: 'input',
             name: 'name',
-            message: 'What would you like to name this department?'
-        }
+            message: 'What is the name of this department?'
+        },
     ]).then(answers => {
         answers.id = parseInt(answers.id)
         let newDepartment = new Department(answers.id, answers.name)
@@ -184,80 +214,80 @@ function addDepartment() {
     })
 }
 
+function queryEmployees() {
+    return new Promise(resolve => {
+        let data = connection.query("SELECT first_name, last_name, role_id, manager_id, title, salary, department_id FROM employeeDB.employee AS E JOIN roles AS R ON E.role_id = R.id;", function (err, res) {
+            if (err) throw err
+            console.table(res)
+            resolve('resolved')
+            // return data
+        })
+    })
+}
 
+async function viewEmployees() {
+    const result = await queryEmployees()
+    console.log(result)
+    // JSON.parse(query)
+}
 
+function queryDepartments() {
+    return new Promise(resolve => {
+        let data = connection.query("SELECT department_name, department_id FROM employeeDB.department AS D JOIN employeeDB.roles AS R ON D.id = R.id", function (err, res) {
+            if (err) throw err
+            console.table(res)
+            resolve('resolved')
+            // return data
+        })
+    })
+}
 
+async function viewDepartment() {
+    const result = await queryDepartments()
+    console.log(result)
+    // JSON.parse(query)
+}
 
+function queryRoles() {
+    return new Promise(resolve => {
+        let data = connection.query("SELECT title, salary, department_id, department_name FROM employeeDB.roles AS R JOIN employeeDB.department AS D ON R.id = D.id;", function (err, res) {
+            if (err) throw err
+            console.table(res)
+            resolve('resolved')
+            // return data
+        })
+    })
+}
 
-// function queryAdd() {
-//     inquirer.prompt({
-//             type: 'list',
-//             name: 'userAdd',
-//             message: 'What would you like to add to the database?',
-//             choices: [
-//                 "Add a department",
-//                 "Add an role",
-//                 "Add an employee",
-//             ]
-//         })
-//         .then((answer) => {
-//             // Create a switch case for what the user wants to add
-//             switch (answer.userChoice) {
-//                 case "Department":
-//                     let query = 'INSERT INTO Departments (name) VALUES (${})';
-//                     connection.query(query, (err, results) => {
-//                         if (err) throw err;
-//                         console.log(results);
-//                         runSearch();
-//                     });
-//                     break;
-//                 case "role":
-//                     queryAddRole();
-//                     break;
-//                 case "employee":
-//                     queryAddEmployee();
-//                     break;
-//             }
-//         })
+async function viewRoles() {
+    const result = await queryRoles()
+    console.log(result)
+    // JSON.parse(query)
+}
 
-// }​
-
-
-// function queryView() {
-//     inquirer.prompt({
-//             type: 'list',
-//             name: 'userView',
-//             message: 'What would you like to view from the database?',
-//             choices: [
-//                 "View a department",
-//                 "View a role",
-//                 "View an employee",
-//             ]
-//         })
-//         .then((answer) => {
-//             switch (answer.userView) {
-//                 case "View a department":
-//                     let query = 'SELECT * FROM Departments';
-//                     connection.query(query, (err, results) => {
-//                         if (err) throw err;
-//                         console.log(results);
-//                         runSearch();
-//                     });
-//                     break;
-//                 case "View a role":
-//                     let query = 'SELECT * FROM role';
-//                     connection.query(query, (err, results) => {
-//                         if (err) throw err;
-//                         console.log(results);
-//                         runSearch();
-//                     });
-
-//                     break;
-//                 case "View a employee":
-//                     queryAddEmployee();
-//                     break;
-//             }
-
-
-//         });
-// }​
+function updateEmployeeRole() {
+    console.log('You selected to update an employee!')
+    inquirer.prompt([{
+            type: 'list',
+            name: 'employee',
+            message: 'Which Employee would you like to update',
+            choices: [
+                'Thomas hunt',
+                'William Paulson',
+                'Joshua Wilson'
+            ]
+        },
+        {
+            type: 'list',
+            name: 'newRole',
+            message: 'What is their new Role?',
+            choices: [
+                'Accountant',
+                'Developer',
+                'Engineer'
+            ]
+        }
+    ]).then(answers => {
+        console.log(answers)
+    })
+}

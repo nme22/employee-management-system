@@ -16,5 +16,9 @@
   "bugs": {
     "url": "https://github.com/nme22/employee-management-system/issues"
   },
-  "homepage": "https://github.com/nme22/employee-management-system#readme"
+  "homepage": "https://github.com/nme22/employee-management-system#readme",
+  "dependencies": {
+    "inquirer": "^8.0.0",
+    "mysql": "^2.18.1"
+  }
 }
