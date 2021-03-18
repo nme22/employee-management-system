@@ -34,11 +34,11 @@
 ## Questions
     Reach out to me Via Email
     
-##Github Username
+## Github Username
 
     Follow me on Github: [nme22] ((https://github.com/nme22))
 
-##Github Email
+## Github Email
 	Feel free to reachout via: navidmebrahimi22@gmail.com
 	
 README created with [README-Generator] (https://github.com/nme22/README-Generator)
