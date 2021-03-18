@@ -207,7 +207,7 @@ function addDepartment() {
     ]).then(answers => {
         answers.id = parseInt(answers.id)
         let newDepartment = new Department(answers.id, answers.name)
-        connection.query("INSERT INTO department Set ?", newDepartment, function (err, res) {
+        connection.query("INSERT INTO department SET ?", newDepartment, function (err, res) {
             if (err) throw err
         })
         console.table(answers)
